@@ -1,6 +1,7 @@
 
-import { OpenAI } from "langchain/llms/openai";
 import { loadSummarizationChain } from "langchain/chains";
+import { Document } from "langchain/document";
+import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate} from "langchain/prompts";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
@@ -20,8 +21,10 @@ const prompt = new PromptTemplate({ _prompt, inputVariables: ["text"] });
 export const run = async (prompt) => {
     // text processing TODO: query strategy based on text length
     const text = "Full text article coming from Carlos"
+    const wordCount = text.split(" ").length;
+    // generate docs from textSplitter only if wordCount is bigger than 40000 words, otherwise use the text as is
     const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 10000, chunkOverlap: 200,  separators: ["\n\n"]});
-    const docs = await textSplitter.createDocuments([text]);
+    const docs = wordCount > 40000 ? await textSplitter.createDocuments([text]) : [Document({ pageContent: text })];
     console.log({ length: docs.length })
 
     // query setup
