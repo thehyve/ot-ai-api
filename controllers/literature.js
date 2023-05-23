@@ -1,5 +1,5 @@
-const axios = require("axios");
-const { XMLParser } = require("fast-xml-parser");
+import axios from "axios";
+import { XMLParser } from "fast-xml-parser";
 
 function europePmcSearchPOSTQuery(id) {
   const baseUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/PMC${id}/fullTextXML`;
@@ -55,7 +55,7 @@ function getPlainText({ pubBodyJson }) {
   return str;
 }
 
-async function handleLiterartureRequest({ id }) {
+export async function handleLiterartureRequest({ id }) {
   const { baseUrl } = europePmcSearchPOSTQuery(id);
   const requestOptions = {
     method: "GET",
@@ -78,5 +78,3 @@ async function handleLiterartureRequest({ id }) {
   });
   return str;
 }
-
-module.exports = { handleLiterartureRequest };
