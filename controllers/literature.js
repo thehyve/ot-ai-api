@@ -6,7 +6,54 @@ function europePmcSearchPOSTQuery(id) {
   return { baseUrl };
 }
 
-async function getPlainText() {}
+function getPlainText({ pubBodyJson }) {
+  let str = "";
+
+  const hanblePChild = (par, title) => {
+    const isParArr = Array.isArray(par);
+    let sectionText = title + "\n ";
+    if (isParArr) {
+      par.forEach((p) => {
+        let text = "";
+        if (typeof p === "string") {
+          text = p + "\n";
+        } else {
+          text = p["#text"] + "\n";
+        }
+        sectionText += text;
+      });
+    } else {
+      let text = "";
+      if (typeof par === "object") {
+        text = par["#text"] + "\n";
+      }
+      if (typeof par === "string") {
+        text = par + "\n";
+      }
+      sectionText += text;
+    }
+    return sectionText;
+  };
+
+  const handleSecChild = (element) => {
+    element.sec.forEach((section) => {
+      const title = section.title;
+      const par = section.p;
+      const childSec = section.sec;
+      if (!par && !childSec) return;
+      if (par) {
+        str += hanblePChild(par, title);
+      }
+      if (childSec) {
+        handleSecChild(section);
+      }
+    });
+  };
+
+  handleSecChild(pubBodyJson);
+
+  return str;
+}
 
 async function handleLiterartureRequest({ id }) {
   const { baseUrl } = europePmcSearchPOSTQuery(id);
@@ -21,13 +68,15 @@ async function handleLiterartureRequest({ id }) {
   let str = "";
   const parser = new XMLParser();
   await axios.get(baseUrl, requestOptions).then(({ data: XMLData }) => {
-    // json = parser.toJson(XMLData);
     const jsonData = parser.parse(XMLData);
-    const body = jsonData.article.body;
+    const pubBodyJson = jsonData.article.body;
 
-    json = body;
+    const response = getPlainText({ pubBodyJson });
+
+    str = response;
+    json = pubBodyJson;
   });
-  return json;
+  return str;
 }
 
 module.exports = { handleLiterartureRequest };
