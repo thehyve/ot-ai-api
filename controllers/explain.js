@@ -1,4 +1,4 @@
-import { loadSummarizationChain } from "langchain/chains";
+import { loadQAMapReduceChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
@@ -7,15 +7,9 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 export const run = async ({ text, targetSymbol, diseaseName }) => {
-  const _prompt = `
-    Write a concise summary that explains the association between the target ${targetSymbol} and the disease ${diseaseName} based on the following publication:
-    {text}
-    `;
 
-  const prompt = new PromptTemplate({
-    template: _prompt,
-    inputVariables: ["text"],
-  });
+  const _prompt = `
+    Can you provide a concise summary about the relationship between ${targetSymbol} and ${diseaseName} according to this study?`;
 
   // text processing TODO: query strategy based on text length
   const wordCount = text.split(" ").length;
@@ -28,6 +22,11 @@ export const run = async ({ text, targetSymbol, diseaseName }) => {
 
   const docs = await textSplitter.createDocuments([text]);
 
+  const prompt = new PromptTemplate({
+    template: _prompt,
+    inputVariables: ["text"],
+  });
+
   console.log({ wordCount });
   console.log({ length: docs.length });
 
@@ -37,11 +36,11 @@ export const run = async ({ text, targetSymbol, diseaseName }) => {
     modelName: "gpt-3.5-turbo",
     temperature: 0.5,
     openAIApiKey: process.env.OPENAI_TOKEN,
+    maxConcurrency: 10,
   });
-  const chain = loadSummarizationChain(model, { type: "map_reduce" }, prompt);
-  const apiResponse = await chain.call({
+  const chain = loadQAMapReduceChain(model);
+  return await chain.call({
     input_documents: docs,
+    question: _prompt
   });
-
-  return apiResponse;
 };
