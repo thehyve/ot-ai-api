@@ -4,7 +4,6 @@ import { getPublicationPlainText } from "../controllers/publication.js";
 import {
   getPublicationSummary,
   streamTest,
-  getPubSummaryPayload,
 } from "../controllers/publicationSummary.js";
 import * as dotenv from "dotenv";
 import logger from "../utils/logger.js";
@@ -13,11 +12,6 @@ dotenv.config();
 const router = express.Router();
 
 router.post("/publication/summary/stream", async (req, res) => {
-  const { pmcId, targetSymbol, diseaseName } = getPubSummaryPayload({
-    req,
-    next,
-  });
-
   res.setHeader("Content-Type", "application/ndjson");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
@@ -51,7 +45,8 @@ router.post("/publication/summary/", async (req, res) => {
 
   const { pmcId, targetSymbol, diseaseName } = req.body.payload;
 
-  const wbIdWithRandom = `${pmcId}_${targetSymbol}_${diseaseName}_${Math.floor(
+  const prettyDiseaseName = diseaseName.replace(/\s/g, "_");
+  const wbIdWithRandom = `${pmcId}_${targetSymbol}_${prettyDiseaseName}_${Math.floor(
     Math.random() * 1000
   )}`;
   const wbTracer = await WandbTracer.init(
