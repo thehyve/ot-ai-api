@@ -46,7 +46,7 @@ export const getPublicationSummary = async ({
   targetSymbol,
   diseaseName,
   pmcId,
-  wbTracer,
+  wbTracer = null,
 }) => {
   const prompt = createPrompt({ targetSymbol, diseaseName });
 
@@ -58,11 +58,9 @@ export const getPublicationSummary = async ({
   });
 
   const docs = await textSplitter.createDocuments([text]);
-
   logger.info(JSON.stringify({ wordCount, docsLength: docs.length }));
-
   const chain = loadQAMapReduceChain(model);
-  logger.info("reauest to gpt");
+  logger.info("request to openai");
   if (wbTracer !== null) {
     wandb.log({
       targetSymbol: targetSymbol,
