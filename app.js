@@ -19,7 +19,16 @@ if (isDevelopment) {
 }
 
 if (isProduction) {
-  app.use(cors());
+  app.use(
+    cors({
+      origin: [
+        "https://partner-platform.opentargets.org",
+        "https://partner-platform.dev.opentargets.xyz",
+        "https://platform.opentargets.org",
+        "https://platform.dev.opentargets.xyz",
+      ],
+    })
+  );
 }
 
 app.use("/literature", literatureRouter);
