@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import { WandbTracer } from "@wandb/sdk/integrations/langchain";
 import * as dotenv from "dotenv";
 
@@ -6,6 +6,8 @@ import { getPublicationPlainText } from "../controllers/publication.js";
 import {
   getPublicationSummary,
   streamTest,
+  test,
+  getMulitpleAbstractSummary,
 } from "../controllers/publicationSummary.js";
 import { isDevelopment } from "../utils/index.js";
 import logger from "../utils/logger.js";
@@ -29,6 +31,29 @@ async function payloadValidator({ req }) {
   }
   return { error };
 }
+
+router.all("/publication/abstract-summary", async (req, res) => {
+
+  // const payloadError = await payloadValidator({ req });
+  // if (payloadError.error) {
+  //   return res.status(400).json(payloadError);
+  // }
+
+  const abstracts = req.body.payload.abstracts;
+  
+  // console.log(abstracts.length)
+
+  const llm_response = await getMulitpleAbstractSummary({abstracts})
+  // console.log(res)
+
+  // console.log(llm_response)
+  // var test_res = await test();
+  // console.log(test_res);
+  return res.send(llm_response);
+
+
+});
+
 
 router.post("/publication/summary/stream", async (req, res) => {
   res.setHeader("Content-Type", "application/ndjson");
