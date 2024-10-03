@@ -1,5 +1,5 @@
 import { loadQAMapReduceChain } from "langchain/chains";
-import { OpenAI } from "langchain/llms/openai";
+import { AzureChatOpenAI } from "@langchain/openai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import wandb from "@wandb/sdk";
 
@@ -10,10 +10,12 @@ dotenv.config();
 
 // query setup
 // summarization docs https://js.langchain.com/docs/api/chains/functions/loadQAMapReduceChain
-const model = new OpenAI({
-  modelName: "gpt-4o-mini",
-  openAIApiKey: process.env.OPENAI_TOKEN,
-  temperature: 0.5,
+const model = new AzureChatOpenAI({
+  azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+  azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
+  azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+  azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION,
+  azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_API_INSTANCE_NAME,
 });
 
 const createPrompt = ({ targetSymbol, diseaseName }) => {
@@ -40,6 +42,43 @@ export const streamTest = ({ res }) => {
   res.write("Thinking...");
   sendAndSleep(res, 1);
 };
+
+export const test = async () => {
+  var result = await model.invoke(
+    "hello how are you today?"
+  )
+  console.log(result)
+  return result
+};
+
+export const getMulitpleAbstractSummary = async ({
+  abstracts,
+}) => {
+  var prompt = "Please give a concise summary of the following abstracts, please refer to them by their titles\n"
+
+  for(let i = 0; i < abstracts.length; i++) {
+    prompt = prompt.concat("Title:\n", abstracts[i].publication.title, "\nAbstract:\n", abstracts[i].publication.abstract)
+  }
+
+
+  // const wordCount = text.split(" ").length;
+  // const chunkSize = 14000; // max character count per chunk
+  // const textSplitter = new RecursiveCharacterTextSplitter({
+  //   chunkSize,
+  //   separators: ["\n\n", "\n", " "],
+  // });
+
+  // const docs = await textSplitter.createDocuments([text]);
+  // logger.info(JSON.stringify({ wordCount, docsLength: docs.length }));
+  // const chain = loadQAMapReduceChain(model);
+  // logger.info("request to openai");
+  console.log(prompt)
+  const apiResponse = await model.invoke(prompt);
+
+  return apiResponse
+};
+
+
 
 export const getPublicationSummary = async ({
   text,

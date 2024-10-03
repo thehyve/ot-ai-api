@@ -15,7 +15,15 @@ app.use(httpLogger);
 app.use(express.json());
 
 if (isDevelopment) {
-  app.use(cors());
+  app.use(cors({
+    origin: [
+      "http://localhost",
+      "http://localhost:3000",
+      "localhost",
+      "localhost:3000"
+    ]
+  }
+  ));
 }
 
 if (isProduction) {
