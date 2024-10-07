@@ -38,12 +38,18 @@ router.all("/publication/abstract-summary", async (req, res) => {
   // if (payloadError.error) {
   //   return res.status(400).json(payloadError);
   // }
+  const name = req.body.payload.name;
 
+  var entity = req.body.payload.entity;
+  if(req.body.payload.entity == "target") {
+    entity = req.body.payload.entity.concat(" gene");
+  }
+  
   const abstracts = req.body.payload.abstracts;
   
   // console.log(abstracts.length)
 
-  const llm_response = await getMulitpleAbstractSummary({abstracts})
+  const llm_response = await getMulitpleAbstractSummary({name, entity, abstracts})
   // console.log(res)
 
   // console.log(llm_response)

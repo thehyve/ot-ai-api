@@ -52,12 +52,19 @@ export const test = async () => {
 };
 
 export const getMulitpleAbstractSummary = async ({
+  name,
+  entity,
   abstracts,
 }) => {
-  var prompt = "Please give a concise summary of the following abstracts, please refer to them by their titles\n"
+  var prompt = 
+  `You are given abstracts related to ${name} ${entity}. Use information found in the abstracts to inform me about this ${entity}.
+  Combine the information found in the following abstracts into a single story.\n
+  Format the output as plaintext.\n
+  If abstract 1 is used as information source, add a citation [1] to the text if an abstact is used.\n
+  `
 
   for(let i = 0; i < abstracts.length; i++) {
-    prompt = prompt.concat("Title:\n", abstracts[i].publication.title, "\nAbstract:\n", abstracts[i].publication.abstract)
+    prompt = prompt.concat("Abstract ", i+1, " Title:\n", abstracts[i].publication.title, "\nAbstract:\n", abstracts[i].publication.abstract)
   }
 
 
