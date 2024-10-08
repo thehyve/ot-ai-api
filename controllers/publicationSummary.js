@@ -55,7 +55,7 @@ export const getMulitpleAbstractSummary = async ({
   name,
   entity,
   abstracts,
-}) => {
+}) => {  
   var prompt = 
   `You are given abstracts related to ${name} ${entity}. Use information found in the abstracts to inform me about this ${entity}.
   Combine the information found in the following abstracts into a single story.\n
@@ -67,19 +67,6 @@ export const getMulitpleAbstractSummary = async ({
     prompt = prompt.concat("Abstract ", i+1, " Title:\n", abstracts[i].publication.title, "\nAbstract:\n", abstracts[i].publication.abstract)
   }
 
-
-  // const wordCount = text.split(" ").length;
-  // const chunkSize = 14000; // max character count per chunk
-  // const textSplitter = new RecursiveCharacterTextSplitter({
-  //   chunkSize,
-  //   separators: ["\n\n", "\n", " "],
-  // });
-
-  // const docs = await textSplitter.createDocuments([text]);
-  // logger.info(JSON.stringify({ wordCount, docsLength: docs.length }));
-  // const chain = loadQAMapReduceChain(model);
-  // logger.info("request to openai");
-  console.log(prompt)
   const apiResponse = await model.invoke(prompt);
 
   return apiResponse

@@ -18,9 +18,9 @@ if (isDevelopment) {
   app.use(cors({
     origin: [
       "http://localhost",
+      "https://localhost",
       "http://localhost:3000",
-      "localhost",
-      "localhost:3000"
+      "http://localhost:3001",
     ]
   }
   ));
@@ -34,6 +34,7 @@ if (isProduction) {
         "https://partner-platform.dev.opentargets.xyz",
         "https://platform.opentargets.org",
         "https://platform.dev.opentargets.xyz",
+        "https://localhost",
       ],
     })
   );
