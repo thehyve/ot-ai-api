@@ -47,14 +47,8 @@ router.all("/publication/abstract-summary", async (req, res) => {
   
   const abstracts = req.body.payload.abstracts;
   
-  // console.log(abstracts.length)
-
   const llm_response = await getMulitpleAbstractSummary({name, entity, abstracts})
-  // console.log(res)
 
-  // console.log(llm_response)
-  // var test_res = await test();
-  // console.log(test_res);
   return res.send(llm_response);
 
 

@@ -43,14 +43,6 @@ export const streamTest = ({ res }) => {
   sendAndSleep(res, 1);
 };
 
-export const test = async () => {
-  var result = await model.invoke(
-    "hello how are you today?"
-  )
-  console.log(result)
-  return result
-};
-
 export const getMulitpleAbstractSummary = async ({
   name,
   entity,
