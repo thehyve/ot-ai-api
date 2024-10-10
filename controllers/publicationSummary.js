@@ -53,6 +53,7 @@ export const getMulitpleAbstractSummary = async ({
   Combine the information found in the following abstracts into a single story.\n
   Format the output as plaintext.\n
   If abstract 1 is used as information source, add a citation [1] to the text if an abstact is used.\n
+  Never add a list of citations at the end of the story.
   `
 
   for(let i = 0; i < abstracts.length; i++) {

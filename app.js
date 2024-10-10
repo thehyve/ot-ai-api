@@ -35,6 +35,7 @@ if (isProduction) {
         "https://platform.opentargets.org",
         "https://platform.dev.opentargets.xyz",
         "https://localhost",
+        "localhost"
       ],
     })
   );

@@ -6,7 +6,6 @@ import { getPublicationPlainText } from "../controllers/publication.js";
 import {
   getPublicationSummary,
   streamTest,
-  test,
   getMulitpleAbstractSummary,
 } from "../controllers/publicationSummary.js";
 import { isDevelopment } from "../utils/index.js";
