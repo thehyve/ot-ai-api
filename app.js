@@ -12,7 +12,7 @@ const port = normalizePort(process.env.PORT || "8080");
 const app = express();
 
 app.use(httpLogger);
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
 
 if (isDevelopment) {
   app.use(cors({

@@ -11,6 +11,7 @@ dotenv.config();
 // query setup
 // summarization docs https://js.langchain.com/docs/api/chains/functions/loadQAMapReduceChain
 const model = new AzureChatOpenAI({
+  temperature: .9,
   azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
   azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
   azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
@@ -53,13 +54,19 @@ export const getMulitpleAbstractSummary = async ({
   Combine the information found in the following abstracts into a single story.\n
   Format the output as plaintext.\n
   If abstract 1 is used as information source, add a citation [1] to the text if an abstact is used.\n
+  Only use abstracts that are listed as context as an abstract, do not make up numbers.
   Never add a list of citations at the end of the story.
   `
+  console.log(abstracts)
 
   for(let i = 0; i < abstracts.length; i++) {
-    prompt = prompt.concat("Abstract ", i+1, " Title:\n", abstracts[i].publication.title, "\nAbstract:\n", abstracts[i].publication.abstract)
+    if(abstracts[i].publication != null){
+      prompt = prompt.concat("\nAbstract [", abstracts[i].publication.number, "]\n Title:\n", abstracts[i].publication.title, "\nAbstract:\n", abstracts[i].publication.abstract.replace(/<[^>]*>?/gm, ''))
+    } else {
+      prompt = prompt.concat("\nAbstract [", abstracts[i].number, "]\n Title:\n", abstracts[i].title, "\nAbstract:\n", abstracts[i].abstract.replace(/<[^>]*>?/gm, ''))
+    }
   }
-
+  console.log(prompt)
   const apiResponse = await model.invoke(prompt);
 
   return apiResponse
