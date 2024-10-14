@@ -57,7 +57,6 @@ export const getMulitpleAbstractSummary = async ({
   Only use abstracts that are listed as context as an abstract, do not make up numbers.
   Never add a list of citations at the end of the story.
   `
-  console.log(abstracts)
 
   for(let i = 0; i < abstracts.length; i++) {
     if(abstracts[i].publication != null){
@@ -66,7 +65,6 @@ export const getMulitpleAbstractSummary = async ({
       prompt = prompt.concat("\nAbstract [", abstracts[i].number, "]\n Title:\n", abstracts[i].title, "\nAbstract:\n", abstracts[i].abstract.replace(/<[^>]*>?/gm, ''))
     }
   }
-  console.log(prompt)
   const apiResponse = await model.invoke(prompt);
 
   return apiResponse
