@@ -11,6 +11,10 @@ import {
 import { isDevelopment } from "../utils/index.js";
 import logger from "../utils/logger.js";
 
+var LLM_counter = 0;
+var LLM_counter_date = new Date();
+const MAX_LLM_REQUESTS = 100;
+
 dotenv.config();
 const router = express.Router();
 
@@ -63,11 +67,22 @@ router.post("/publication/abstract-summary", async (req, res) => {
   
   const abstracts = req.body.payload.abstracts;
   
-  const llm_response = await getMulitpleAbstractSummary({name, entity, abstracts})
+  const currentDate = new Date();
 
-  return res.send(llm_response);
-
-
+  if(LLM_counter_date.getDay() == currentDate.getDay()) {
+    if(LLM_counter < MAX_LLM_REQUESTS) {
+      const llm_response = await getMulitpleAbstractSummary({name, entity, abstracts})
+      LLM_counter++;
+      return res.send(llm_response)
+    } else {
+      return res.status(400).json({error: "LLM message limit reached, please try again tomorrow."});
+    }
+  } else {
+      const llm_response = await getMulitpleAbstractSummary({name, entity, abstracts})
+      LLM_counter_date = currentDate;
+      LLM_counter = 1;
+      return res.send(llm_response)
+  }
 });
 
 
