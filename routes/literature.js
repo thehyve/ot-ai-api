@@ -31,12 +31,29 @@ async function payloadValidator({ req }) {
   return { error };
 }
 
-router.all("/publication/abstract-summary", async (req, res) => {
+async function abstactSummaryPayloadValidator({ req }) {
+  let error = false;
+  if (!req.body.payload) {
+    error = "Missing payload";
+  }
+  if (!req.body.payload.name) {
+    error = "Missing name in payload";
+  }
+  if (!req.body.payload.entity) {
+    error = "Missing entity in payload";
+  }
+  if (!req.body.payload.abstracts) {
+    error = "Missing abstracts in payload";
+  }
+  return { error };
+}
 
-  // const payloadError = await payloadValidator({ req });
-  // if (payloadError.error) {
-  //   return res.status(400).json(payloadError);
-  // }
+router.post("/publication/abstract-summary", async (req, res) => {
+
+  const payloadError = await abstactSummaryPayloadValidator({ req });
+  if (payloadError.error) {
+    return res.status(400).json(payloadError);
+  }
   const name = req.body.payload.name;
 
   var entity = req.body.payload.entity;
