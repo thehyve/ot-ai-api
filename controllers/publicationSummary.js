@@ -57,14 +57,14 @@ export const getMulitpleAbstractSummary = async ({
   Only use abstracts that are listed as context as an abstract, do not make up numbers.
   Never add a list of citations at the end of the story.
   `
-
+  
   for(let i = 0; i < abstracts.length; i++) {
-    if(abstracts[i].publication.abstract != null){
-      if(abstracts[i].publication != null){
-        prompt = prompt.concat("\nAbstract [", abstracts[i].publication.number, "]\n Title:\n", abstracts[i].publication.title, "\nAbstract:\n", abstracts[i].publication.abstract.replace(/<[^>]*>?/gm, ''))
-      } else {
-        prompt = prompt.concat("\nAbstract [", abstracts[i].number, "]\n Title:\n", abstracts[i].title, "\nAbstract:\n", abstracts[i].abstract.replace(/<[^>]*>?/gm, ''))
-      }
+    // if the abstracts are sent from the bibliography section
+    if(abstracts[i].hasOwnProperty("publication").hasOwnProperty("abstract")){
+      prompt = prompt.concat("\nAbstract [", abstracts[i].publication.number, "]\n Title:\n", abstracts[i].publication.title, "\nAbstract:\n", abstracts[i].publication.abstract.replace(/<[^>]*>?/gm, ''))
+    // if the abstracts are sent from the EuropePMC section
+    } else if(abstracts[i].hasOwnProperty("abstract")) {
+      prompt = prompt.concat("\nAbstract [", abstracts[i].number, "]\n Title:\n", abstracts[i].title, "\nAbstract:\n", abstracts[i].abstract.replace(/<[^>]*>?/gm, ''))
     }
   }
   const apiResponse = await model.invoke(prompt);
