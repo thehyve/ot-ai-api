@@ -12,10 +12,18 @@ const port = normalizePort(process.env.PORT || "8080");
 const app = express();
 
 app.use(httpLogger);
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
 
 if (isDevelopment) {
-  app.use(cors());
+  app.use(cors({
+    origin: [
+      "http://localhost",
+      "https://localhost",
+      "http://localhost:3000",
+      "http://localhost:3001",
+    ]
+  }
+  ));
 }
 
 if (isProduction) {
@@ -26,6 +34,8 @@ if (isProduction) {
         "https://partner-platform.dev.opentargets.xyz",
         "https://platform.opentargets.org",
         "https://platform.dev.opentargets.xyz",
+        "https://localhost",
+        "localhost"
       ],
     })
   );
