@@ -11,12 +11,12 @@ import {
 import { isDevelopment } from "../utils/index.js";
 import logger from "../utils/logger.js";
 
-var LLM_counter = 0;
-var LLM_counter_date = new Date();
-const MAX_LLM_REQUESTS = 100;
-
 dotenv.config();
 const router = express.Router();
+
+var LLM_counter = 0;
+var LLM_counter_date = new Date();
+const MAX_LLM_REQUESTS = process.env.MAX_LLM_REQUESTS;
 
 async function payloadValidator({ req }) {
   let error = false;
