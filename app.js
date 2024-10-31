@@ -17,10 +17,7 @@ app.use(express.json({limit: '50mb'}));
 if (isDevelopment) {
   app.use(cors({
     origin: [
-      "http://localhost",
-      "https://localhost",
-      "http://localhost:3000",
-      "http://localhost:3001",
+      process.env.SERVER_NAME,
     ]
   }
   ));
@@ -34,8 +31,7 @@ if (isProduction) {
         "https://partner-platform.dev.opentargets.xyz",
         "https://platform.opentargets.org",
         "https://platform.dev.opentargets.xyz",
-        "https://localhost",
-        "localhost"
+        process.env.SERVER_NAME
       ],
     })
   );
