@@ -26,6 +26,7 @@ if (isProduction) {
         "https://partner-platform.dev.opentargets.xyz",
         "https://platform.opentargets.org",
         "https://platform.dev.opentargets.xyz",
+        ...(process.env.CORS_ORIGIN_URLS ? process.env.CORS_ORIGIN_URLS.split(",") : []),
       ],
     })
   );
