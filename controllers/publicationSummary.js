@@ -62,24 +62,29 @@ export const streamTest = ({ res }) => {
   sendAndSleep(res, 1);
 };
 
-export const getMulitpleAbstractSummary = async ({
+export const getMultipleAbstractSummary = async ({
   name,
   entity,
   abstracts,
 }) => {  
-  var prompt = 
-  `You are given abstracts related to ${name} ${entity}. Use information found in the abstracts to inform me about this ${entity}.
-  Combine the information found in the following abstracts into a single story.\n
-  Format the output as plaintext.\n
-  If abstract 1 is used as information source, add a citation [1] to the text if an abstact is used.\n
-  Only use abstracts that are listed as context as an abstract, do not make up numbers.
-  Never add a list of citations at the end of the story.
-  `
-  
+  var prompt = `
+    You are given several abstracts related to ${name} (${entity}). Your task is to write a clear, informative summary combining information from all provided abstracts. 
+    The audience are scientists expert on ${name}. They are looking for a quick overview of the main findings, and to get recommended on which paper would be interesting.
+
+    Instructions:
+    - Start with a concise textual summary that synthesizes the main points, agreements, and contradictions.
+    - List the key findings from all the abstracts as bullet points, each with a citation [n].
+    - Compare the findings: do the abstracts agree or contradict? Clearly state any agreements or contradictions.
+    - Use plain text format. Do not invent citations or reference abstracts not provided. Do not add a list of citations at the end.
+    - Highlight key words in **bold**.
+    - don't ask follow up questions. your sole purpose is to provide a summary.
+
+    Below are the abstracts:
+    `
   for(let i = 0; i < abstracts.length; i++) {
     // if the abstracts are sent from the bibliography section
-    if(abstracts[i].hasOwnProperty("publication").hasOwnProperty("abstract")){
-      prompt = prompt.concat("\nAbstract [", abstracts[i].publication.number, "]\n Title:\n", abstracts[i].publication.title, "\nAbstract:\n", abstracts[i].publication.abstract.replace(/<[^>]*>?/gm, ''))
+    if(abstracts[i].hasOwnProperty("europePmcId") && abstracts[i].hasOwnProperty("abstract") && abstracts[i].hasOwnProperty("title")){
+      prompt = prompt.concat("\nAbstract [", i + 1, "]\n Title:\n", abstracts[i].title, "\nAbstract:\n", abstracts[i].abstract.replace(/<[^>]*>?/gm, ''))
     // if the abstracts are sent from the EuropePMC section
     } else if(abstracts[i].hasOwnProperty("abstract")) {
       prompt = prompt.concat("\nAbstract [", abstracts[i].number, "]\n Title:\n", abstracts[i].title, "\nAbstract:\n", abstracts[i].abstract.replace(/<[^>]*>?/gm, ''))
