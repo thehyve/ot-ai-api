@@ -81,7 +81,6 @@ export const getMultipleAbstractSummary = async ({
 
     Below are the abstracts:
     `
-  console.log(abstracts)
   for(let i = 0; i < abstracts.length; i++) {
     // if the abstracts are sent from the bibliography section
     if(abstracts[i].hasOwnProperty("europePmcId") && abstracts[i].hasOwnProperty("abstract") && abstracts[i].hasOwnProperty("title")){
