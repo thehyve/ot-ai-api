@@ -62,7 +62,7 @@ export const streamTest = ({ res }) => {
   sendAndSleep(res, 1);
 };
 
-export const getMulitpleAbstractSummary = async ({
+export const getMultipleAbstractSummary = async ({
   name,
   entity,
   abstracts,

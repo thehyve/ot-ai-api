@@ -6,7 +6,7 @@ import { getPublicationPlainText } from "../controllers/publication.js";
 import {
   getPublicationSummary,
   streamTest,
-  getMulitpleAbstractSummary,
+  getMultipleAbstractSummary,
 } from "../controllers/publicationSummary.js";
 import { isDevelopment } from "../utils/index.js";
 import logger from "../utils/logger.js";
@@ -71,14 +71,14 @@ router.post("/publication/abstract-summary", async (req, res) => {
 
   if(LLM_counter_date.getDay() == currentDate.getDay()) {
     if(LLM_counter < MAX_LLM_REQUESTS) {
-      const llm_response = await getMulitpleAbstractSummary({name, entity, abstracts})
+      const llm_response = await getMultipleAbstractSummary({name, entity, abstracts})
       LLM_counter++;
       return res.send(llm_response)
     } else {
       return res.status(400).json({error: "LLM message limit reached, please try again tomorrow."});
     }
   } else {
-      const llm_response = await getMulitpleAbstractSummary({name, entity, abstracts})
+      const llm_response = await getMultipleAbstractSummary({name, entity, abstracts})
       LLM_counter_date = currentDate;
       LLM_counter = 1;
       return res.send(llm_response)
